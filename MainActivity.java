@@ -1,7 +1,6 @@
 package com.example.kalikousik14.test2;
 
 import android.app.ProgressDialog;
-import android.icu.util.Output;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,10 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         btnHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JsonTask().execute("https://api.railwayapi.com/v2/between/source/mdu/dest/dg/date/24-10-2018/apikey/ffctqjbocz/");
+                new JsonTask().execute("https://api.railwayapi.com/v2/live/train/12621/date/13-10-2018/apikey/ffctqjbocz/");
             }
         });
 
@@ -114,33 +110,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (pd.isShowing()) {
-                pd.dismiss();
+               pd.dismiss();
             }
-            String data="";
-            try {
-                JSONObject jsonRootObject = new JSONObject(result);
-
-                //Get the instance of JSONArray that contains JSONObjects
-                JSONArray jsonArray = jsonRootObject.optJSONArray("trains");
-
-                //Iterate the jsonArray and print the info of JSONObjects
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                     int id = Integer.parseInt(jsonObject.optString("trains_number").toString());
-                     String name = jsonObject.optString("trains_from_station_name").toString();
-                     String salary = jsonObject.optString("trains_classes_name").toString();
-
-                     data += "Node"+i+" : \n id= "+ id +" \n Name= "+ name +" \n Salary= "+ salary +" \n ";
-
+                Gson g = new Gson();
+                Codebeautify cd = g.fromJson(result,Codebeautify.class);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-
                 DatabaseReference posts = database.getReference();
-                TextView tvJson= (TextView) findViewById(R.id.tvJsonItem);
-                tvJson.setText(data);
+                posts.push().setValue(cd);
 
-            }}
-            catch (JSONException e){e.printStackTrace();}
-        }
+            }
     }
 }
