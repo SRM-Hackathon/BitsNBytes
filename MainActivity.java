@@ -8,12 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import org.json.JSONException;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -109,15 +106,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (pd.isShowing()) {
-               pd.dismiss();
+            if (pd.isShowing()){
+                pd.dismiss();
             }
-                Gson g = new Gson();
-                Codebeautify cd = g.fromJson(result,Codebeautify.class);
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference posts = database.getReference();
-                posts.push().setValue(cd);
-
-            }
+            Gson g = new Gson();
+            Codebeautify cd = g.fromJson(result,Codebeautify.class);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference posts = database.getReference();
+            posts.push().setValue(cd);
+        }
     }
 }
